@@ -1,57 +1,43 @@
 package com.creative.ekart.service;
 
 import com.creative.ekart.model.Category;
+import com.creative.ekart.repository.CategoryRepository;
 import com.creative.ekart.service.interfaces.CategoryService;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.ArrayList;
 import java.util.List;
 
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-    private final List<Category> categories ;
+    private CategoryRepository categoryRepository;
 
-    public CategoryServiceImpl() {
-        this. categories = new ArrayList<Category>();
+    CategoryServiceImpl(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
     public List<Category> getAllCategories() {
-        return categories;
+        return categoryRepository.findAll();
     }
 
     @Override
     public void createCategory(Category category) {
-        category.setCategoryId(1000L + categories.size());
-        categories.add(category);
+        categoryRepository.save(category);
     }
 
     @Override
     public void deleteCategory(Long id) {
-
-        Category cat = categories
-                .stream()
-                .filter(c -> c.getCategoryId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No Resource Available"));
-        categories.remove(cat);
+        categoryRepository.deleteById(id);
 
     }
 
     @Override
     public void updateCategory(Long id, Category category) {
 
-        Category cat = categories
-                .stream()
-                .filter(c -> c.getCategoryId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No Resource Available"));
-
+        Category cat = categoryRepository.findById(id).get();
         cat.setCategoryName(category.getCategoryName());
+        categoryRepository.save(cat);
 
 
     }
