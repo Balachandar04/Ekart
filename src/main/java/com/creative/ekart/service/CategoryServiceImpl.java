@@ -1,5 +1,6 @@
 package com.creative.ekart.service;
 
+import com.creative.ekart.exception.ResourceNotFoundException;
 import com.creative.ekart.model.Category;
 import com.creative.ekart.repository.CategoryRepository;
 import com.creative.ekart.service.interfaces.CategoryService;
@@ -7,10 +8,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 
+
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
     CategoryServiceImpl(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
@@ -28,17 +30,18 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategory(Long id) {
-        categoryRepository.deleteById(id);
-
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Category not found"));
+        categoryRepository.delete(category);
     }
 
     @Override
     public void updateCategory(Long id, Category category) {
 
-        Category cat = categoryRepository.findById(id).get();
-        cat.setCategoryName(category.getCategoryName());
-        categoryRepository.save(cat);
-
-
+        Category existingCategory = categoryRepository
+                .findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Category not found"));
+        existingCategory.setCategoryName(category.getCategoryName());
+        categoryRepository.save(existingCategory);
     }
 }
