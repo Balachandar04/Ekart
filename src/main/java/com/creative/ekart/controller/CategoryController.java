@@ -1,5 +1,6 @@
 package com.creative.ekart.controller;
 
+import com.creative.ekart.config.AppConstants;
 import com.creative.ekart.payload.CategoryDTO;
 import com.creative.ekart.payload.CategoryResponse;
 import com.creative.ekart.service.interfaces.CategoryService;
@@ -20,8 +21,20 @@ public class CategoryController {
     }
 
     @GetMapping("/public/categories")
-    public ResponseEntity<CategoryResponse> getCategories() {
-        CategoryResponse response = categoryService.getAllCategories();
+    public ResponseEntity<CategoryResponse> getCategories(@RequestParam(value = "pageNumber",
+                                                                      defaultValue = AppConstants.PAGE_NUMBER,
+                                                                      required = false) Integer pageNumber ,
+                                                          @RequestParam(value="pageSize",
+                                                                  defaultValue = AppConstants.PAGE_SIZE,
+                                                                  required = false) Integer pageSize,
+                                                          @RequestParam(value="pageSize",
+                                                                  defaultValue = AppConstants.SORT_CATEGORY_BY,
+                                                                  required = false) String sortBy,
+                                                          @RequestParam(value="sortOrder",
+                                                                  defaultValue = AppConstants.SORT_DIRECTION,
+                                                                  required = false) String sortOrder) {
+
+        CategoryResponse response = categoryService.getAllCategories(pageNumber, pageSize, sortBy, sortOrder);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

@@ -1,5 +1,6 @@
 package com.creative.ekart.exception;
 
+import com.creative.ekart.payload.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,9 +16,9 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException e, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),new Date());
-        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ApiResponse> handleResourceNotFoundException(ResourceNotFoundException e, WebRequest request) {
+        ApiResponse response = new ApiResponse(e.getMessage(),false);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -33,14 +34,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ApiException.class)
-    public ResponseEntity<?> handleApiException(ApiException e, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),new Date());
-        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiResponse> handleApiException(ApiException e, WebRequest request) {
+        ApiResponse response = new ApiResponse(e.getMessage(),false);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleException(Exception e, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),new Date());
-        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ApiResponse> handleException(Exception e, WebRequest request) {
+        ApiResponse response = new ApiResponse(e.getMessage(),false);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
