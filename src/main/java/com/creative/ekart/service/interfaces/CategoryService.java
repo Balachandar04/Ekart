@@ -1,14 +1,16 @@
 package com.creative.ekart.service.interfaces;
 
 import com.creative.ekart.model.Category;
+import com.creative.ekart.payload.CategoryDTO;
+import com.creative.ekart.payload.CategoryResponse;
 
 import java.util.List;
 
 public interface CategoryService {
-    List<Category> getAllCategories();
-    void createCategory(Category category);
+    CategoryResponse getAllCategories();
+    CategoryDTO createCategory(CategoryDTO categoryDTO);
 
-    void deleteCategory(Long id);
+    CategoryDTO deleteCategory(Long id);
 
-    void updateCategory(Long id, Category category);
+    CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO);
 }

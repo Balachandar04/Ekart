@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException e, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),new Date());
-        return new ResponseEntity<>(errorDetails, e.getStatusCode());
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -32,9 +32,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleException(ResourceNotFoundException e, WebRequest request) {
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<?> handleApiException(ApiException e, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),new Date());
-        return new ResponseEntity<>(errorDetails, e.getStatusCode());
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(Exception e, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(e.getMessage(),new Date());
+        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
