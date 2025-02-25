@@ -1,7 +1,5 @@
 package com.creative.ekart.exception;
 
-import org.springframework.http.HttpStatus;
-
 public class ResourceNotFoundException extends RuntimeException {
 
     private String resourceName;

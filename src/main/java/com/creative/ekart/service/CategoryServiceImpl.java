@@ -40,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
         Sort sortByAndDirection = orderDirection.equalsIgnoreCase("asc")
                 ? Sort.by(orderBy).ascending()
                 : Sort.by(orderBy).descending();
-        Pageable pageDetails = PageRequest.of(pageNumber, pageSize);
+        Pageable pageDetails = PageRequest.of(pageNumber, pageSize,sortByAndDirection);
         Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
         List<Category> allCategories = categoryPage.getContent();
         if(allCategories.isEmpty()) {
@@ -64,7 +64,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
         Category category = modelMapper.map(categoryDTO,Category.class);
-        category.setCategoryId(null);
+
         Category selectedCategory = categoryRepository.findByCategoryName(category.getCategoryName());
         if(selectedCategory != null) {
              throw new ApiException("Category with name "+category.getCategoryName()+" already exists");
