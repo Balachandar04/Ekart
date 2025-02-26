@@ -17,9 +17,10 @@ public class Product {
     private Long productId;
     private String productName;
     private String description;
+    private String image;
     private Integer quantity;
     private Double price;
-    private Double specialPrice;
+    private Double discount;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cateogry_id")
