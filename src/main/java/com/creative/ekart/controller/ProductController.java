@@ -8,6 +8,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api")
@@ -80,4 +83,26 @@ public class ProductController {
 
     }
 
+    @PutMapping("admin/products/{productId}")
+    public ResponseEntity<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO productDTO,
+                                                    @PathVariable Long productId) {
+        ProductDTO updatedProduct = productService.updateProductById(productId,productDTO);
+        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+
+    }
+
+    @PutMapping("admin/products/{productId}/image")
+    public ResponseEntity<ProductDTO> updateProductImage(@RequestParam("image") MultipartFile image,
+                                                         @PathVariable Long productId) throws IOException {
+        ProductDTO productDTO = productService.updateImage(productId,image);
+        return new ResponseEntity<>(productDTO,HttpStatus.OK);
+    }
+
+    @DeleteMapping("admin/products/{productId}")
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long productId) {
+
+        ProductDTO deletedProductDTO = productService.deleteProductById(productId);
+        return new ResponseEntity<>(deletedProductDTO, HttpStatus.OK);
+
+    }
 }

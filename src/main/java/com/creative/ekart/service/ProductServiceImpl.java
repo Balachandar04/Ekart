@@ -8,13 +8,18 @@ import com.creative.ekart.payload.ProductDTO;
 import com.creative.ekart.payload.ProductResponse;
 import com.creative.ekart.repository.CategoryRepository;
 import com.creative.ekart.repository.ProductRepository;
+import com.creative.ekart.service.interfaces.FileService;
 import com.creative.ekart.service.interfaces.ProductService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -23,14 +28,19 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
     private final CategoryRepository categoryRepository;
+    private final FileService fileService;
+    @Value("${image.path}")
+    private String path;
 
 
     public ProductServiceImpl(ProductRepository productRepository,
                               ModelMapper modelMapper,
-                              CategoryRepository categoryRepository) {
+                              CategoryRepository categoryRepository,
+                              FileService fileService) {
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
         this.categoryRepository = categoryRepository;
+        this.fileService = fileService;
     }
 
     private ProductResponse getProductResponse(Page<Product> pageProducts) {
@@ -95,6 +105,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO addProduct(ProductDTO productDTO,Long categoryId) {
+
         Category category = categoryRepository.
                 findById(categoryId).
                 orElseThrow(()->
@@ -104,5 +115,47 @@ public class ProductServiceImpl implements ProductService {
         Product savedProduct = productRepository.save(product);
         return modelMapper.map(savedProduct, ProductDTO.class);
     }
+
+    @Override
+    public ProductDTO updateProductById(Long id, ProductDTO productDTO) {
+        Product retrivedProduct = productRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Product ","id",id));
+        Product recievedProduct = modelMapper.map(productDTO, Product.class);
+
+
+        retrivedProduct.setDescription(recievedProduct.getDescription());
+        retrivedProduct.setPrice(recievedProduct.getPrice());
+        retrivedProduct.setCategory(recievedProduct.getCategory());
+        retrivedProduct.setProductName(recievedProduct.getProductName());
+        retrivedProduct.setDiscount(recievedProduct.getDiscount());
+        retrivedProduct.setQuantity(recievedProduct.getQuantity());
+
+        Product updatedProduct = productRepository.save(retrivedProduct);
+        ProductDTO updatedProductDTO = modelMapper.map(updatedProduct, ProductDTO.class);
+
+        return updatedProductDTO;
+    }
+
+    public ProductDTO deleteProductById(Long id){
+
+        Product existingProduct =productRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Product ","id",id));
+
+        productRepository.delete(existingProduct);
+        return modelMapper.map(existingProduct, ProductDTO.class);
+    }
+
+    @Override
+    public ProductDTO updateImage(Long productId, MultipartFile image) throws IOException {
+        Product existingProduct = productRepository.findById(productId)
+                .orElseThrow(()->new ResourceNotFoundException("Product ","id",productId));
+
+        String fileName = fileService.uploadImage(image,path);
+        existingProduct.setImage(fileName);
+        Product updatedProduct = productRepository.save(existingProduct);
+        return modelMapper.map(updatedProduct, ProductDTO.class);
+    }
+
+
 
 }
