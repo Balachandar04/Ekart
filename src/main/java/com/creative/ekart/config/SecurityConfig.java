@@ -1,6 +1,6 @@
 package com.creative.ekart.config;
 
-import com.creative.ekart.service.JwtFilter;
+import com.creative.ekart.jwt.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

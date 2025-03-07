@@ -1,4 +1,4 @@
-package com.creative.ekart.service;
+package com.creative.ekart.payload;
 
 import com.creative.ekart.model.Role;
 import com.creative.ekart.model.User;

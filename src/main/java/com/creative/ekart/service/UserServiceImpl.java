@@ -3,18 +3,16 @@ package com.creative.ekart.service;
 import com.creative.ekart.exception.ApiException;
 import com.creative.ekart.model.User;
 import com.creative.ekart.payload.AuthRequest;
+import com.creative.ekart.payload.UserInfo;
 import com.creative.ekart.repository.UserRepository;
 import com.creative.ekart.service.interfaces.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class  UserServiceImpl implements UserService{

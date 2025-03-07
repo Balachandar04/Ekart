@@ -1,4 +1,4 @@
-package com.creative.ekart.service;
+package com.creative.ekart.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
