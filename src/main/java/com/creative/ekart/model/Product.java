@@ -22,8 +22,12 @@ public class Product {
     private Double price;
     private Double discount;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "cateogry_id")
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

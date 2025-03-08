@@ -5,6 +5,8 @@ import com.creative.ekart.payload.AuthRequest;
 import com.creative.ekart.payload.AuthResponse;
 import com.creative.ekart.jwt.JwtUtils;
 import com.creative.ekart.service.interfaces.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,10 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth/")
@@ -50,19 +49,23 @@ public class AuthController {
 
     }
 
-    @PostMapping("signin")
-    public ResponseEntity<AuthResponse> signin(@Valid @RequestBody AuthRequest authRequest) {
-        //empty Authentication object
-        Authentication authentication = new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword());
+    @PostMapping("login")
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest authRequest, HttpServletResponse response) {
+
         //Authenticate it !!!
-        authentication = authenticationManager.authenticate(authentication);
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                authRequest.getUsername(), authRequest.getPassword()));
         // Getting UserDetails from it
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         //Generating JWT
-        String token = jwtUtils.generateToken(userDetails);
-        AuthResponse authResponse = new AuthResponse(token);
+//        String token = jwtUtils.generateToken(userDetails);
+        Cookie jwtCookie = jwtUtils.generateTokenCookie(userDetails);
+        response.addCookie(jwtCookie);
+        AuthResponse authResponse = new AuthResponse(jwtCookie.getValue());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return new ResponseEntity<>(authResponse, HttpStatus.OK);
     }
+
+
 
 }

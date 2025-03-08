@@ -1,15 +1,16 @@
 package com.creative.ekart.config;
 
-import com.creative.ekart.jwt.JwtFilter;
+import com.creative.ekart.jwt.JwtCookieFilter;
+import com.creative.ekart.jwt.JwtEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,26 +22,41 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private  UserDetailsService userDetailsService;
-    private  JwtFilter jwtFilter;
+    private JwtCookieFilter jwtCookieFilter;
+    private JwtEntryPoint jwtEntryPoint;
 
     @Autowired
     public void setUserDetailsService(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
-
     @Autowired
-    @Lazy
-    public void setJwtFilter(JwtFilter jwtFilter) {
-        this.jwtFilter = jwtFilter;
+    public void setJwtCookieFilter(JwtCookieFilter jwtCookieFilter) {
+        this.jwtCookieFilter = jwtCookieFilter;
+    }
+    @Autowired
+    public void setJwtEntryPoint(JwtEntryPoint jwtEntryPoint) {
+        this.jwtEntryPoint = jwtEntryPoint;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf((csrf)->csrf.disable())
-                .authorizeHttpRequests((authorizeRequests) ->
+        http.csrf((csrf) -> csrf.disable())
+                .headers(headers ->
+                        headers.frameOptions(frameOptionsConfig ->
+                                frameOptionsConfig.sameOrigin()))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests.requestMatchers("/api/auth/**").permitAll()
-                                .anyRequest().authenticated())
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                                .requestMatchers("/h2-console/**").permitAll()
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                                .anyRequest().authenticated());
+
+        http.exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(jwtEntryPoint)
+                                .accessDeniedHandler(jwtEntryPoint))
+                .addFilterBefore(jwtCookieFilter , UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -62,9 +78,6 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
-    @Bean
-    public JwtFilter jwtFilter() {
-        return new JwtFilter();
-    }
+
 
 }

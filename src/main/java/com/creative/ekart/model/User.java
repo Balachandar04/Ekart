@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import com.creative.ekart.model.Product;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -42,6 +43,8 @@ public class User {
     inverseJoinColumns = @JoinColumn(name="role_id"))
     private Set<Role> roles = new HashSet<>();
 
+    @OneToMany(mappedBy = "user")
+    private Set<Product> products;
 
     public User(String username, String password) {
         this.username = username;
