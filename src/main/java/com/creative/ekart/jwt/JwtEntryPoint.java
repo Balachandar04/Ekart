@@ -26,6 +26,7 @@ public class JwtEntryPoint implements AuthenticationEntryPoint, AccessDeniedHand
                 .withMessage(authException.getMessage())
                 .withPath(request.getRequestURI())
                 .withStatus(HttpStatus.UNAUTHORIZED)
+                .withReason("Invalid or expired token")
                 .build();
 //        AuthException exception = new AuthException(authException.getMessage(),request.getRequestURI(), HttpStatus.FORBIDDEN);
         ObjectMapper mapper = new ObjectMapper();
@@ -43,6 +44,7 @@ public class JwtEntryPoint implements AuthenticationEntryPoint, AccessDeniedHand
                 .withMessage(accessDeniedException.getMessage())
                 .withPath(request.getRequestURI())
                 .withStatus(HttpStatus.FORBIDDEN)
+                .withReason("Authorization Failed , You dont have the authority for the specified action !!!")
                 .build();
 //        AuthException exception = new AuthException(authException.getMessage(),request.getRequestURI(), HttpStatus.FORBIDDEN);
         ObjectMapper mapper = new ObjectMapper();

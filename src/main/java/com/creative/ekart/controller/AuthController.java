@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -58,14 +59,20 @@ public class AuthController {
         // Getting UserDetails from it
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         //Generating JWT
-//        String token = jwtUtils.generateToken(userDetails);
+        //String token = jwtUtils.generateToken(userDetails);
         Cookie jwtCookie = jwtUtils.generateTokenCookie(userDetails);
         response.addCookie(jwtCookie);
-        AuthResponse authResponse = new AuthResponse(jwtCookie.getValue());
+        AuthResponse authResponse = new AuthResponse(userDetails.getUsername(),jwtCookie.getValue());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return new ResponseEntity<>(authResponse, HttpStatus.OK);
     }
 
-
+    @GetMapping("logout")
+    public ResponseEntity<ApiResponse> logout(HttpServletResponse response) {
+        SecurityContextHolder.getContext().setAuthentication(null);
+        Cookie jwtCookie = jwtUtils.generateEmptyCookie();
+        response.addCookie(jwtCookie);
+        return new ResponseEntity<>(new ApiResponse("Logout Successful",true), HttpStatus.OK);
+    }
 
 }

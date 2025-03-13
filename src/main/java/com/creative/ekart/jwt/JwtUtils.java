@@ -33,7 +33,6 @@ public class JwtUtils {
         String token = buildToken(userDetails, claims);
         Cookie cookie = new Cookie("authToken", token);
         cookie.setPath("/");
-
         cookie.setHttpOnly(false);
         return cookie;
     }
@@ -75,5 +74,12 @@ public class JwtUtils {
     private SecretKey secretKey(){
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public Cookie generateEmptyCookie() {
+        Cookie cookie = new Cookie("authToken", "");
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        return cookie;
     }
 }
