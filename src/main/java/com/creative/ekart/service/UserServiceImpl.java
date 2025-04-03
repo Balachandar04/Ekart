@@ -49,7 +49,7 @@ public class  UserServiceImpl implements UserService{
         }
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = modelMapper.map(userDto, User.class);
-        Role role = userDto.getRole() == null ? new Role(AppRole.ROLE_USER) :
+        Role role = userDto.getRole() == null ? new Role(AppRole.ROLE_ADMIN) :
                 roleRepository.findByRoleName(AppRole.valueOf(userDto.getRole()))
                 .orElseThrow(() -> new ApiException("Role not found"));
 

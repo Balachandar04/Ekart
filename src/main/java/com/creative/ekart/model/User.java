@@ -36,7 +36,7 @@ public class User {
 
     @ToString.Exclude
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+    @ManyToMany(
     fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
     joinColumns = @JoinColumn(name = "user_id"),

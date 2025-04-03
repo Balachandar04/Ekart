@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -29,5 +31,8 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.MERGE,CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    List<CartItem> cartItemList ;
 
 }

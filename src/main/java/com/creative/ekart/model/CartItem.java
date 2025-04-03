@@ -16,15 +16,19 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartItemId;
     private double discount;
-    private double productPrice;
     private int quantity;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
 
     @ManyToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;
+
+    public double getTotalPrice() {
+        double total = quantity*product.getPrice();
+        return total - (total*discount);
+    }
 
 }
