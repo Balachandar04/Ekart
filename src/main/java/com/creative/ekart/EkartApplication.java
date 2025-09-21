@@ -11,7 +11,12 @@ import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConf
 public class EkartApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(EkartApplication.class, args);
+
+
+       SpringApplication.run(EkartApplication.class, args);
+
+
+
     }
 
 }

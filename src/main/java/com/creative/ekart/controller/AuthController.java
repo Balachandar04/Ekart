@@ -45,7 +45,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse> register(@Valid @RequestBody AuthRequest authRequest) {
 
         userService.saveUserToDb(authRequest);
-        ApiResponse response = new ApiResponse("User Successfull Created",true);
+        ApiResponse response = new ApiResponse("User Successfully Created",true);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
 
     }
@@ -66,7 +66,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return new ResponseEntity<>(authResponse, HttpStatus.OK);
     }
-
+    
     @GetMapping("logout")
     public ResponseEntity<ApiResponse> logout(HttpServletResponse response) {
         SecurityContextHolder.getContext().setAuthentication(null);
