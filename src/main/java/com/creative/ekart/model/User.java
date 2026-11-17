@@ -31,7 +31,7 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @ManyToMany
+    @OneToMany(mappedBy = "user",orphanRemoval = true,cascade = CascadeType.ALL)
     private Set<Address> address  = new HashSet<>();;
 
     @ToString.Exclude

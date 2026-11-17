@@ -26,8 +26,11 @@ public class Address {
 
     @ToString.Exclude
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToMany(mappedBy = "address")
-    private Set<User> users = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id",
+                referencedColumnName = "userId",
+                nullable = false)
+    private User user;
 
 
 }
