@@ -2,8 +2,8 @@ package com.creative.ekart.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
 
-    private String resourceName;
-    private String field;
+    private final String resourceName;
+    private final String field;
     private String fieldName;
     private Long fieldId;
 
